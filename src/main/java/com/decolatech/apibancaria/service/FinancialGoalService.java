@@ -5,7 +5,7 @@ import com.decolatech.apibancaria.domain.response.ErrorResponse;
 import com.decolatech.apibancaria.dto.write.FinancialGoalDTO;
 import com.decolatech.apibancaria.mapper.IFinancialGoalMapper;
 import com.decolatech.apibancaria.repository.IFinancialGoalRepository;
-import com.decolatech.apibancaria.domain.interfaces.service.IFinancialGoal;
+import com.decolatech.apibancaria.domain.interfaces.service.IFinancialGoalService;
 import com.decolatech.apibancaria.repository.IUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import static com.decolatech.apibancaria.MethodsAdapter.AtualizarDados;
 
 @Service
-public class FinancialGoalService implements IFinancialGoal {
+public class FinancialGoalService implements IFinancialGoalService {
     public FinancialGoalService(IFinancialGoalRepository repository, IUserRepository userRepository) {
         this.repository = repository;
         this.userRepository = userRepository;

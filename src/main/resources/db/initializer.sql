@@ -8,11 +8,11 @@ INSERT INTO tb_account (user_id, number, agency, balance, additional_limit) VALU
 
 -- Inserção de dados para card
 INSERT INTO tb_card (user_id, number, available_limit, expiration_date, cvv) VALUES
-(1, '4111111111111111', 5000.00, '2026-12-31', '1234'),
-(2, '5500000000000004', 12000.00, '2025-05-31', '5678'),
-(3, '340000000000009', 2500.50, '2024-10-30', '2345'),
-(4, '6011510000000016', 8000.75, '2027-03-15', '9876'),
-(5, '30000000000004', 1500.00, '2026-07-31', '4321');
+(1, '4111111111111132', 5000.00, '2026-12-31', '1234'),
+(2, '5500000000000094', 12000.00, '2025-05-31', '5678'),
+(3, '340000000000039', 2500.50, '2024-10-30', '2345'),
+(4, '6011510000000826', 8000.75, '2027-03-15', '9876'),
+(5, '300000000000094', 1500.00, '2026-07-31', '4321');
 
 -- Inserção de dados para Financial Goal
 INSERT INTO tb_financial_goal (user_id, goal_amount, saved_amount, remaining_amount) VALUES
