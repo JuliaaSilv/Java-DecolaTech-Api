@@ -13,7 +13,7 @@ public class OpenAPIConfig {
                 .info(new Info()
                         .title("DecolaTechAPI")
                         .version("1.0")
-                        .description("Api Restful em Java"));
+                        .description("API de Conta Bancária"));
 
     }
 }

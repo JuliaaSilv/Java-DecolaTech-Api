@@ -1,6 +1,6 @@
 package com.decolatech.apibancaria.controller;
 
-import com.decolatech.apibancaria.domain.interfaces.service.IFinancialGoal;
+import com.decolatech.apibancaria.domain.interfaces.service.IFinancialGoalService;
 import com.decolatech.apibancaria.domain.response.ApiResponse;
 import com.decolatech.apibancaria.dto.write.FinancialGoalDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("v1/financial-goal")
 public class FinancialGoalController {
 
-    private final IFinancialGoal financialService;
+    private final IFinancialGoalService financialService;
 
-    public FinancialGoalController(IFinancialGoal financialService) {
+    public FinancialGoalController(IFinancialGoalService financialService) {
         this.financialService = financialService;
 
 

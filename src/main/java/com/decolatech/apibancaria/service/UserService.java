@@ -25,7 +25,7 @@ public class UserService implements IUserService {
     private final IAccountRepository accountRepository;
 
     public UserService(IUserRepository userRepository, INewsRepository newsRepository, ILimitManagementRepository limitManagementRepository, IFinancialGoalRepository financialGoalRepository, ICardRepository cardRepository, IAccountRepository accountRepository) {
-        this.userRepository = userRepository;
+        this.userRepository = userRepository;  //Injeção de dependência, chama todos os repistorys e faz um construtor deles para que os métodos acessem automaticamente o banco de dados, sem instanciar manualmente
         this.newsRepository = newsRepository;
         this.limitManagementRepository = limitManagementRepository;
         this.financialGoalRepository = financialGoalRepository;
@@ -34,7 +34,7 @@ public class UserService implements IUserService {
     }
 
     public ApiResponse buscarUsuarios() {
-        List<UserDTO> result = new ArrayList<>();
+        List<UserDTO> result = new ArrayList<>(); //criei uma lista para armazenar todos os objetos de USERDTO
         var users = userRepository.findAll();
         var news = newsRepository.findAll();
         var limits = limitManagementRepository.findAll();
@@ -42,7 +42,7 @@ public class UserService implements IUserService {
         var cards = cardRepository.findAll();
         var accounts = accountRepository.findAll();
 
-        for (var user : users) {
+        for (var user : users) { //cria um objeto USERDTO e preenche os dados abaixo
 
             UserDTO userDTO = new UserDTO();
 
@@ -54,7 +54,7 @@ public class UserService implements IUserService {
             userDTO.birthdate = user.getBirthdate();
             userDTO.password = user.getPassword();
 
-            var account = accounts
+            var account = accounts  //aqui ele utiliza o filter para filtrar os dados de cada usuário se existir, caso contrário retorna null
                     .stream().filter(x -> x.getUserId().equals(user.getId()))
                     .findFirst().orElse(null);
             var card = cards
@@ -75,7 +75,7 @@ public class UserService implements IUserService {
             userDTO.card = ICardMapper.MAP.toDto(card);
             userDTO.limitManagement = ILimitManagementMapper.MAP.toDto(limit);
             userDTO.financialGoal = IFinancialGoalMapper.MAP.toDto(financial);
-            userDTO.news = INewsMapper.MAP.toDtoList(notifications);
+            userDTO.news = INewsMapper.MAP.toDtoList(notifications); //Mapeamento utilizando o MAPPER, que por baixo dos panos converte os objetos para DTO
 
             result.add(userDTO);
         }
