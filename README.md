@@ -9,7 +9,7 @@ Esta é uma API RESTful para gerenciamento de contas bancárias, desenvolvida co
   </a>
 </p>
 
-## Modelagem do sistema ⬇️
+## Diagrama de Classes
   
 ```mermaid
 classDiagram
