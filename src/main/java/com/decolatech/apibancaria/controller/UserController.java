@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Perfil do Usuário")
+@Tag(name = "Usuário")
 @RestController
 @RequestMapping("/users")
 public class UserController {
