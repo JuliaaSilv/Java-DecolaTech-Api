@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface INewsRepository extends JpaRepository<News, Long> {
     List<News> findByUserId(Long id);
+    void deleteByUserId(Long id);
 }

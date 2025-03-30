@@ -1,6 +1,7 @@
 package com.decolatech.apibancaria.service;
 
 import com.decolatech.apibancaria.domain.interfaces.service.IUserService;
+import com.decolatech.apibancaria.domain.model.FinancialGoal;
 import com.decolatech.apibancaria.domain.model.News;
 import com.decolatech.apibancaria.domain.response.ApiResponse;
 import com.decolatech.apibancaria.domain.response.ErrorResponse;
@@ -104,11 +105,38 @@ public class UserService implements IUserService {
 
     public ApiResponse DeletarUsuarioporId(Long id) {
         var result = userRepository.findById(id);
+        var newsIdList = newsRepository.findByUserId(id).stream().map(News::getId).toList();
+        var limitId = limitManagementRepository.findByUserId(id).getId();
+        var financialIdList = financialGoalRepository.findByUserId(id).stream().map(FinancialGoal::getId).toList();
+        var cardId = cardRepository.findByUserId(id).getId();
+        var accountId = accountRepository.findByUserId(id).getId();
+
+
         if (result.isEmpty()) {
             return new ApiResponse(null, new ErrorResponse("Nenhum usuário encontrado", "Não tem usuários registrados no sistema"), HttpStatus.NOT_FOUND.value());
 
 
         }
+        if (!newsIdList.isEmpty()) {
+            for(var newsId:newsIdList) {
+                newsRepository.deleteById(newsId);
+            }
+
+        }
+        if (limitId >=0)
+            limitManagementRepository.deleteById(limitId);
+
+        if (!financialIdList.isEmpty()) {
+            for(var financialId:financialIdList) {
+                financialGoalRepository.deleteById(financialId);
+            }
+        }
+        if (cardId >=0)
+            cardRepository.deleteById(cardId);
+
+        if (accountId >=0)
+            accountRepository.deleteById(accountId);
+
         userRepository.deleteById(id);
         return new ApiResponse(id,null, HttpStatus.OK.value());
     }
