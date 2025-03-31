@@ -177,7 +177,7 @@ public class UserService implements IUserService {
         if (userExists.isEmpty()) {
             return new ApiResponse(null, new ErrorResponse("Cpf já existe", "Cpf já registrado no banco de dados"), HttpStatus.UNPROCESSABLE_ENTITY.value());
         }
-        if (userDTO.account != null) {
+        if (userDTO.account != null) {  //Verificando se usuário tem conta.
             userDTO.account.userId = userDTO.id;
         }
 
@@ -194,15 +194,15 @@ public class UserService implements IUserService {
             userDTO.news.forEach(x -> x.userId = userDTO.id);
         }
 
-        return userRepository.findById(id)
-                .map(oldUser -> {
+        return userRepository.findById(id)      //Busca
+                .map(oldUser -> { //Se o usuário for encontrado
 
 
-                    var oldUserDto = IUserMapper.MAP.toDtoWrite(oldUser);
-                    var newUser = AtualizarDados(oldUserDto, userDTO);
-                    var userResult = IUserMapper.MAP.toEntityWrite(newUser);
+                    var oldUserDto = IUserMapper.MAP.toDtoWrite(oldUser); //Transforma oldUser para dto
+                    var newUser = AtualizarDados(oldUserDto, userDTO); //Atualiza
+                    var userResult = IUserMapper.MAP.toEntityWrite(newUser); //Converte o DTO de volta
 
-                    var accountEntity = IAccountMapper.MAP.toEntityWrite(userDTO.account);
+                    var accountEntity = IAccountMapper.MAP.toEntityWrite(userDTO.account); //Converte objetos para entidades.
                     var cardEntity = ICardMapper.MAP.toEntityWrite(userDTO.card);
                     var limitEntity = ILimitManagementMapper.MAP.toEntityWrite(userDTO.limitManagement);
                     var newsEntities = userDTO.news.stream().map(INewsMapper.MAP::toEntity).toList();
@@ -215,9 +215,9 @@ public class UserService implements IUserService {
                             new ApiResponse(null, new ErrorResponse("Conta não encontrada", "O Id a conta não foi encontrado"), HttpStatus.NOT_FOUND.value());
                         accountRepository.save(accountEntity);
                     }
-                    if (cardEntity != null) {
-                        var oldDataCard = cardRepository.findByUserId(id);
-                        var currentCardId = cardEntity.getId();
+                    if (cardEntity != null) { //Verifica se possui card
+                        var oldDataCard = cardRepository.findByUserId(id); //Busca card atual
+                        var currentCardId = cardEntity.getId(); //Novos dados
                         if (!currentCardId.equals(oldDataCard.getId()))
                             new ApiResponse(null, new ErrorResponse("Cartão não encontrado", "O Id do cartão não foi encontrado"), HttpStatus.NOT_FOUND.value());
                         cardRepository.save(cardEntity);
