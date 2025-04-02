@@ -175,7 +175,7 @@ public class UserService implements IUserService {
     public ApiResponse AtualizarUsuario(com.decolatech.apibancaria.dto.write.UserDTO userDTO, Long id) {
         var userExists = userRepository.findById(id);
         if (userExists.isEmpty()) {
-            return new ApiResponse(null, new ErrorResponse("Cpf já existe", "Cpf já registrado no banco de dados"), HttpStatus.UNPROCESSABLE_ENTITY.value());
+            return new ApiResponse(null, new ErrorResponse("Usuário não encontrado", "O Id fornecido não corresponde a nenhum usuário cadastrado"), HttpStatus.UNPROCESSABLE_ENTITY.value());
         }
         if (userDTO.account != null) {  //Verificando se usuário tem conta.
             userDTO.account.userId = userDTO.id;
