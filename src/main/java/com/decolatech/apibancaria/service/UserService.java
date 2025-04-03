@@ -26,7 +26,7 @@ public class UserService implements IUserService {
     private final IAccountRepository accountRepository;
 
     public UserService(IUserRepository userRepository, INewsRepository newsRepository, ILimitManagementRepository limitManagementRepository, IFinancialGoalRepository financialGoalRepository, ICardRepository cardRepository, IAccountRepository accountRepository) {
-        this.userRepository = userRepository;  //Injeção de dependência, chama todos os repistorys e faz um construtor deles para que os métodos acessem automaticamente o banco de dados, sem instanciar manualmente
+        this.userRepository = userRepository; //Exemplo de Injeção de depêndencia.
         this.newsRepository = newsRepository;
         this.limitManagementRepository = limitManagementRepository;
         this.financialGoalRepository = financialGoalRepository;
@@ -35,7 +35,8 @@ public class UserService implements IUserService {
     }
 
     public ApiResponse buscarUsuarios() {
-        List<UserDTO> result = new ArrayList<>(); //criei uma lista para armazenar todos os objetos de USERDTO
+        List<UserDTO> result = new ArrayList<>();
+        //Entidades do banco de dados
         var users = userRepository.findAll();
         var news = newsRepository.findAll();
         var limits = limitManagementRepository.findAll();
@@ -43,8 +44,9 @@ public class UserService implements IUserService {
         var cards = cardRepository.findAll();
         var accounts = accountRepository.findAll();
 
-        for (var user : users) { //cria um objeto USERDTO e preenche os dados abaixo
+        for (var user : users) {
 
+            //Objeto para construir o resultado
             UserDTO userDTO = new UserDTO();
 
             userDTO.id = user.getId();
@@ -55,7 +57,8 @@ public class UserService implements IUserService {
             userDTO.birthdate = user.getBirthdate();
             userDTO.password = user.getPassword();
 
-            var account = accounts  //aqui ele utiliza o filter para filtrar os dados de cada usuário se existir, caso contrário retorna null
+            //Filtrar os dados por id do usuário
+            var account = accounts
                     .stream().filter(x -> x.getUserId().equals(user.getId()))
                     .findFirst().orElse(null);
             var card = cards
@@ -71,12 +74,12 @@ public class UserService implements IUserService {
                     .stream().filter(x -> x.getUserId().equals(user.getId()))
                     .toList();
 
-
+            //Está sendo utilizado MapStruct
             userDTO.account = IAccountMapper.MAP.toDto(account);
             userDTO.card = ICardMapper.MAP.toDto(card);
             userDTO.limitManagement = ILimitManagementMapper.MAP.toDto(limit);
             userDTO.financialGoal = IFinancialGoalMapper.MAP.toDto(financial);
-            userDTO.news = INewsMapper.MAP.toDtoList(notifications); //Mapeamento utilizando o MAPPER, que por baixo dos panos converte os objetos para DTO
+            userDTO.news = INewsMapper.MAP.toDtoList(notifications);
 
             result.add(userDTO);
         }
@@ -84,6 +87,7 @@ public class UserService implements IUserService {
     }
 
     public ApiResponse buscarUsuarioporId(Long id) {
+        //Retorno do ApiResponse
         var result = this.buscarUsuarios().data;
 
         if (!(result instanceof List)) {
@@ -92,9 +96,6 @@ public class UserService implements IUserService {
 
         List<UserDTO> users = (List<UserDTO>) result;
 
-        if (users.isEmpty()) {
-            return new ApiResponse(null, new ErrorResponse("Nenhum usuário encontrado", "Não tem usuários registrados no sistema"), HttpStatus.NOT_FOUND.value());
-        }
         return users
                 .stream().filter(x -> x.id.equals(id))
                 .findFirst()
@@ -111,17 +112,14 @@ public class UserService implements IUserService {
         var cardId = cardRepository.findByUserId(id).getId();
         var accountId = accountRepository.findByUserId(id).getId();
 
-
         if (result.isEmpty()) {
             return new ApiResponse(null, new ErrorResponse("Nenhum usuário encontrado", "Não tem usuários registrados no sistema"), HttpStatus.NOT_FOUND.value());
-
-
         }
+
         if (!newsIdList.isEmpty()) {
             for(var newsId:newsIdList) {
                 newsRepository.deleteById(newsId);
             }
-
         }
         if (limitId >=0)
             limitManagementRepository.deleteById(limitId);
@@ -158,6 +156,7 @@ public class UserService implements IUserService {
         if (!userIsCreated)
             return new ApiResponse(null, new ErrorResponse("Ocorreu um erro", "Não foi possível criar o usuário"), HttpStatus.INTERNAL_SERVER_ERROR.value());
 
+        //Configuração do Id do Usuário
         news.forEach(x -> x.setUserId(user.getId()));
         limit.setUserId(user.getId());
         card.setUserId(user.getId());
@@ -177,7 +176,8 @@ public class UserService implements IUserService {
         if (userExists.isEmpty()) {
             return new ApiResponse(null, new ErrorResponse("Usuário não encontrado", "O Id fornecido não corresponde a nenhum usuário cadastrado"), HttpStatus.UNPROCESSABLE_ENTITY.value());
         }
-        if (userDTO.account != null) {  //Verificando se usuário tem conta.
+        //Configuração id do usuário
+        if (userDTO.account != null) {
             userDTO.account.userId = userDTO.id;
         }
 
@@ -194,15 +194,15 @@ public class UserService implements IUserService {
             userDTO.news.forEach(x -> x.userId = userDTO.id);
         }
 
-        return userRepository.findById(id)      //Busca
-                .map(oldUser -> { //Se o usuário for encontrado
+        return userRepository.findById(id)
+                .map(oldUser -> {
 
 
-                    var oldUserDto = IUserMapper.MAP.toDtoWrite(oldUser); //Transforma oldUser para dto
-                    var newUser = AtualizarDados(oldUserDto, userDTO); //Atualiza
-                    var userResult = IUserMapper.MAP.toEntityWrite(newUser); //Converte o DTO de volta
+                    var oldUserDto = IUserMapper.MAP.toDtoWrite(oldUser);
+                    var newUser = AtualizarDados(oldUserDto, userDTO);
+                    var userResult = IUserMapper.MAP.toEntityWrite(newUser);
 
-                    var accountEntity = IAccountMapper.MAP.toEntityWrite(userDTO.account); //Converte objetos para entidades.
+                    var accountEntity = IAccountMapper.MAP.toEntityWrite(userDTO.account);
                     var cardEntity = ICardMapper.MAP.toEntityWrite(userDTO.card);
                     var limitEntity = ILimitManagementMapper.MAP.toEntityWrite(userDTO.limitManagement);
                     var newsEntities = userDTO.news.stream().map(INewsMapper.MAP::toEntity).toList();
@@ -215,9 +215,9 @@ public class UserService implements IUserService {
                             new ApiResponse(null, new ErrorResponse("Conta não encontrada", "O Id a conta não foi encontrado"), HttpStatus.NOT_FOUND.value());
                         accountRepository.save(accountEntity);
                     }
-                    if (cardEntity != null) { //Verifica se possui card
-                        var oldDataCard = cardRepository.findByUserId(id); //Busca card atual
-                        var currentCardId = cardEntity.getId(); //Novos dados
+                    if (cardEntity != null) {
+                        var oldDataCard = cardRepository.findByUserId(id);
+                        var currentCardId = cardEntity.getId();
                         if (!currentCardId.equals(oldDataCard.getId()))
                             new ApiResponse(null, new ErrorResponse("Cartão não encontrado", "O Id do cartão não foi encontrado"), HttpStatus.NOT_FOUND.value());
                         cardRepository.save(cardEntity);
@@ -248,7 +248,7 @@ public class UserService implements IUserService {
                     return new ApiResponse(id, null, HttpStatus.OK.value());
 
                 })
-                .orElseGet(() -> new ApiResponse(null, new ErrorResponse("Usuário não encontrado", "O Id fornecido não corresponde a nenhum usuário cadastrado"), HttpStatus.UNPROCESSABLE_ENTITY.value()));
+                .orElseGet(() -> new ApiResponse(null, new ErrorResponse("Não foi possível atualizar o usuário", "Ocorreu um erro inesperado durante a atualização"), HttpStatus.UNPROCESSABLE_ENTITY.value()));
     }
 
 }
