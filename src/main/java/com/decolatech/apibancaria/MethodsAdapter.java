@@ -8,6 +8,7 @@ import java.util.Objects;
 
 public class MethodsAdapter {
     public static UserDTO AtualizarDados(UserDTO oldUser, UserDTO newUser) {
+        //Utilização de reflection
         var properties = UserDTO.class.getDeclaredFields();
 
         for (Field field : properties ) {
