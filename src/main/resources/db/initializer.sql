@@ -40,7 +40,7 @@ INSERT INTO tb_news (user_id, title, content) VALUES
 
 -- Inserção de User
 INSERT INTO tb_user (name, email, phone, cpf, profile_picture, account_creation_date, birthdate, password) VALUES
-('João Silva', 'joao.silva@email.com', '(11) 98765-4321', '123.456.789-01', '/images/profile1.jpg', '2025-03-08 10:15:30', '1990-05-15', 'senha123'),
+('Marcos', 'marcos.silva@email.com', '(11) 98765-2030', '123.456.787-76', '/images/profile1.jpg', '2025-03-08 10:15:30', '1990-05-15', 'senha123'),
 ('Maria Oliveira', 'maria.oliveira@email.com', '(21) 99876-5432', '234.567.890-12', '/images/profile2.jpg', '2025-03-08 11:20:45', '1985-10-22', 'senha456'),
 ('Carlos Pereira', 'carlos.pereira@email.com', '(31) 91234-5678', '345.678.901-23', '/images/profile3.jpg', '2025-03-08 12:30:50', '1992-02-17', 'senha789'),
 ('Ana Souza', 'ana.souza@email.com', '(41) 93456-7890', '456.789.012-34', '/images/profile4.jpg', '2025-03-08 13:40:55', '1988-12-05', 'senha101112'),
